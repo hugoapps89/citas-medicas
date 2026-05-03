@@ -11,7 +11,8 @@ import {
 
 import {
   getAuth,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -25,39 +26,28 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 const container = document.getElementById("appointments");
-const doctorNameEl = document.getElementById("doctorName");
 
-// 🔙 volver
+// 🔙 volver al inicio
 window.goHome = function() {
   window.location.href = "index.html";
 };
 
-// 🔐 detectar usuario logueado
+// 🔐 proteger y cargar solo sus citas
 onAuthStateChanged(auth, async (user) => {
-
   if (!user) {
     window.location.href = "login.html";
     return;
   }
-
-  const email = user.email;
-
-  // 👉 mostrar nombre del doctor (puedes mejorar esto luego)
-  doctorNameEl.textContent = "Doctor: " + email;
-
-  loadAppointments(email);
+  loadAppointments(user.email);
 });
 
-// 🔥 cargar citas SOLO del doctor logueado
 async function loadAppointments(email) {
-
   const q = query(
     collection(db, "appointments"),
     where("doctorId", "==", email)
   );
 
   const snapshot = await getDocs(q);
-
   container.innerHTML = "";
 
   if (snapshot.empty) {
