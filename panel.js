@@ -9,6 +9,12 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDn-ETfal7IEjghIaZJlbPRTgyOl3BUcKE",
   authDomain: "cita-medica-b4c8c.firebaseapp.com",
@@ -17,44 +23,37 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-const doctorEl = document.getElementById("doctor");
-const dateEl = document.getElementById("date");
 const container = document.getElementById("appointments");
 
-document.getElementById("btnFiltrar").addEventListener("click", load);
-
-// 🔙 volver
+// 🔙 volver al inicio
 window.goHome = function() {
   window.location.href = "index.html";
 };
 
-// 🔥 cargar citas
-async function load() {
-  const doctor = doctorEl.value;
-  const date = dateEl.value;
-
-  if (!doctor) {
-    alert("Selecciona doctor");
+// 🔐 proteger y cargar solo sus citas
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
     return;
   }
+  loadAppointments(user.email);
+});
 
-  let q = collection(db, "appointments");
-
-  if (date) {
-    q = query(q,
-      where("doctor", "==", doctor),
-      where("date", "==", date)
-    );
-  } else {
-    q = query(q,
-      where("doctor", "==", doctor)
-    );
-  }
+async function loadAppointments(email) {
+  const q = query(
+    collection(db, "appointments"),
+    where("doctorId", "==", email)
+  );
 
   const snapshot = await getDocs(q);
-
   container.innerHTML = "";
+
+  if (snapshot.empty) {
+    container.innerHTML = "<p>No tienes citas aún</p>";
+    return;
+  }
 
   snapshot.forEach(docSnap => {
     const a = docSnap.data();
@@ -63,7 +62,6 @@ async function load() {
     div.className = "card";
 
     div.innerHTML = `
-      <b>${a.doctor}</b><br>
       📅 ${a.date} - ⏰ ${a.time}<br>
       👤 ${a.name}<br>
       📞 ${a.phone}
@@ -72,7 +70,7 @@ async function load() {
 
     div.querySelector("button").addEventListener("click", async () => {
       await deleteDoc(doc(db, "appointments", docSnap.id));
-      load();
+      loadAppointments(email);
     });
 
     container.appendChild(div);
