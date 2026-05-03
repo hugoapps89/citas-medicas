@@ -1,50 +1,47 @@
 body {
-  font-family: Arial;
-  background: #eef4ff;
   margin: 0;
-  padding: 20px;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
 }
 
-.container {
-  max-width: 420px;
-  margin: auto;
-}
-
-h1 {
-  text-align: center;
-}
-
-select, input, button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
+header {
+  background: #1e293b;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
 }
 
 button {
-  background: #007bff;
-  color: white;
-  font-weight: bold;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.doctor-btn {
-  background: #28a745;
+.container {
+  padding: 20px;
 }
 
-.back-btn {
-  background: #6c757d;
-}
-
-.card {
-  background: white;
+.cita {
+  background: #1e293b;
   padding: 15px;
-  margin-top: 15px;
   border-radius: 10px;
+  margin-bottom: 10px;
 }
 
-.delete {
-  background: red;
-  margin-top: 10px;
+.btn-wsp {
+  background: #25D366;
+  color: white;
+  margin-right: 5px;
+}
+
+.btn-ok {
+  background: #22c55e;
+  color: white;
+}
+
+.atendido {
+  opacity: 0.5;
+  text-decoration: line-through;
 }
