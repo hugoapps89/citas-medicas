@@ -24,7 +24,12 @@ const container = document.getElementById("appointments");
 
 document.getElementById("btnFiltrar").addEventListener("click", load);
 
-// 🔥 Cargar citas
+// 🔙 volver
+window.goHome = function() {
+  window.location.href = "index.html";
+};
+
+// 🔥 cargar citas
 async function load() {
   const doctor = doctorEl.value;
   const date = dateEl.value;
