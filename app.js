@@ -28,73 +28,86 @@ doctorEl.addEventListener("change", updateTimes);
 dateEl.addEventListener("change", updateTimes);
 btn.addEventListener("click", book);
 
-// 🔒 horarios ocupados por doctor (email) + fecha
-async function getBlockedTimes(doctorEmail, date) {
+// 🔐 acceso panel
+window.goToPanel = function() {
+  let pass = prompt("Clave doctor");
+  if (pass === "1234") {
+    window.location.href = "panel.html";
+  } else {
+    alert("Acceso denegado");
+  }
+};
+
+// 🔒 obtener ocupados
+async function getBlockedTimes(doctor, date) {
   const q = query(
     collection(db, "appointments"),
-    where("doctorId", "==", doctorEmail),
+    where("doctor", "==", doctor),
     where("date", "==", date)
   );
+
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(d => d.data().time);
+  return snapshot.docs.map(doc => doc.data().time);
 }
 
-// 🔄 pintar horarios
+// 🔄 cargar horarios
 async function updateTimes() {
-  const doctorEmail = doctorEl.value;
+  const doctor = doctorEl.value;
   const date = dateEl.value;
 
   timeEl.innerHTML = '<option value="">Selecciona horario</option>';
-  if (!doctorEmail || !date) return;
+
+  if (!doctor || !date) return;
 
   let blocked = [];
+
   try {
-    blocked = await getBlockedTimes(doctorEmail, date);
+    blocked = await getBlockedTimes(doctor, date);
   } catch (e) {
-    console.log("Error Firebase:", e);
+    console.log(e);
   }
 
   baseTimes.forEach(t => {
-    const opt = document.createElement("option");
+    const option = document.createElement("option");
+
     if (blocked.includes(t)) {
-      opt.textContent = t + " (Ocupado)";
-      opt.disabled = true;
+      option.textContent = t + " (Ocupado)";
+      option.disabled = true;
     } else {
-      opt.textContent = t;
-      opt.value = t;
+      option.textContent = t;
+      option.value = t;
     }
-    timeEl.appendChild(opt);
+
+    timeEl.appendChild(option);
   });
 }
 
-// 📲 agendar (guarda doctorId = email)
+// 📲 agendar
 async function book() {
-  const doctorEmail = doctorEl.value;
-  const doctorText = doctorEl.options[doctorEl.selectedIndex]?.text || "";
+  const doctor = doctorEl.value;
   const date = dateEl.value;
   const time = timeEl.value;
   const name = document.getElementById("name").value;
   const phone = document.getElementById("phone").value;
 
-  if (!doctorEmail || !date || !time || !name || !phone) {
+  if (!doctor || !date || !time || !name || !phone) {
     alert("Completa todos los campos");
     return;
   }
 
-  const blocked = await getBlockedTimes(doctorEmail, date);
+  const blocked = await getBlockedTimes(doctor, date);
+
   if (blocked.includes(time)) {
     alert("Horario ocupado");
     return;
   }
 
   await addDoc(collection(db, "appointments"), {
-    doctor: doctorText,     // solo visual
-    doctorId: doctorEmail,  // 🔑 clave para filtrar por login
+    doctor,
     date,
     time,
     name,
-    phone,
-    createdAt: new Date()
+    phone
   });
 
   alert("Cita agendada");
