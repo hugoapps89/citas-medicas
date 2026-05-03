@@ -9,7 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDn...",
+  apiKey: "AIzaSyDn-ETfal7IEjghIaZJlbPRTgyOl3BUcKE",
   authDomain: "cita-medica-b4c8c.firebaseapp.com",
   projectId: "cita-medica-b4c8c",
 };
@@ -22,74 +22,94 @@ const baseTimes = ["09:00","10:00","11:00","12:00","16:00","17:00"];
 const doctorEl = document.getElementById("doctor");
 const dateEl = document.getElementById("date");
 const timeEl = document.getElementById("time");
+const btn = document.getElementById("btnAgendar");
 
 doctorEl.addEventListener("change", updateTimes);
 dateEl.addEventListener("change", updateTimes);
+btn.addEventListener("click", book);
 
+// 🔐 acceso panel
+window.goToPanel = function() {
+  let pass = prompt("Clave doctor");
+  if (pass === "1234") {
+    window.location.href = "panel.html";
+  } else {
+    alert("Acceso denegado");
+  }
+};
+
+// 🔒 obtener ocupados
 async function getBlockedTimes(doctor, date) {
-  const q = query(collection(db, "appointments"),
-    where("doctorId", "==", doctor),
+  const q = query(
+    collection(db, "appointments"),
+    where("doctor", "==", doctor),
     where("date", "==", date)
   );
-  const snap = await getDocs(q);
-  return snap.docs.map(d => d.data().time);
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => doc.data().time);
 }
 
+// 🔄 cargar horarios
 async function updateTimes() {
   const doctor = doctorEl.value;
   const date = dateEl.value;
 
   timeEl.innerHTML = '<option value="">Selecciona horario</option>';
+
   if (!doctor || !date) return;
 
-  const blocked = await getBlockedTimes(doctor, date);
+  let blocked = [];
+
+  try {
+    blocked = await getBlockedTimes(doctor, date);
+  } catch (e) {
+    console.log(e);
+  }
 
   baseTimes.forEach(t => {
-    let opt = document.createElement("option");
+    const option = document.createElement("option");
+
     if (blocked.includes(t)) {
-      opt.textContent = t + " (Ocupado)";
-      opt.disabled = true;
+      option.textContent = t + " (Ocupado)";
+      option.disabled = true;
     } else {
-      opt.textContent = t;
-      opt.value = t;
+      option.textContent = t;
+      option.value = t;
     }
-    timeEl.appendChild(opt);
+
+    timeEl.appendChild(option);
   });
 }
 
-// 📲 AGENDAR + WhatsApp
-document.getElementById("btnAgendar").addEventListener("click", async () => {
-
-  const doctor = doctorEl.options[doctorEl.selectedIndex].text;
-  const doctorId = doctorEl.value;
+// 📲 agendar
+async function book() {
+  const doctor = doctorEl.value;
   const date = dateEl.value;
   const time = timeEl.value;
   const name = document.getElementById("name").value;
-  let phone = document.getElementById("phone").value;
+  const phone = document.getElementById("phone").value;
 
-  if (!doctorId || !date || !time || !name || !phone) {
+  if (!doctor || !date || !time || !name || !phone) {
     alert("Completa todos los campos");
+    return;
+  }
+
+  const blocked = await getBlockedTimes(doctor, date);
+
+  if (blocked.includes(time)) {
+    alert("Horario ocupado");
     return;
   }
 
   await addDoc(collection(db, "appointments"), {
     doctor,
-    doctorId,
     date,
     time,
     name,
     phone
   });
 
-  // 🔥 WhatsApp paciente
-  phone = "52" + phone.replace(/\D/g, "");
-
-  const msg = `Hola ${name}, tu cita está registrada:
-📅 ${date}
-⏰ ${time}
-👨‍⚕️ ${doctor}`;
-
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-
-  window.open(url, "_blank");
-});
+  alert("Cita agendada");
+  updateTimes();
+}
