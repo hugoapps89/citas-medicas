@@ -1,46 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Agendar Cita</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="container">
+<div class="login-container">
+  <h2>Iniciar sesión</h2>
 
-<h1>📅 Agendar Cita</h1>
+  <input type="email" id="email" placeholder="Correo">
+  <input type="password" id="password" placeholder="Contraseña">
 
-<button onclick="window.location.href='login.html'" class="doctor-btn">
-🩺 Panel Doctor
-</button>
-
-<select id="doctor">
-  <option value="">Selecciona especialista</option>
-
-  <!-- 🔥 EL VALUE ES EL EMAIL -->
-  <option value="hugoc381@gmail.com">
-    👨‍⚕️ Médico General — Dr. Juan
-  </option>
-
-  <option value="hugo.argenis@hotmail.com">
-    🦷 Dentista — Dra. Ana
-  </option>
-</select>
-
-<input type="date" id="date">
-
-<select id="time">
-  <option value="">Selecciona horario</option>
-</select>
-
-<input type="text" id="name" placeholder="Tu nombre">
-<input type="tel" id="phone" placeholder="Tu teléfono">
-
-<button id="btnAgendar">📲 Agendar cita</button>
-
+  <button id="btnLogin">Entrar</button>
 </div>
 
-<script type="module" src="login.js"></script>
+<script src="login.js"></script>
 </body>
 </html>
