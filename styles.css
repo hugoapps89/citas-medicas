@@ -1,150 +1,95 @@
-/* 🔹 RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-/* 🔹 BODY */
 body {
-  background: #f4f6f9;
-  color: #333;
-}
-
-/* 🔹 CONTENEDOR */
-.container {
-  max-width: 420px;
-  margin: auto;
+  font-family: Arial;
+  background: #eef4ff;
+  margin: 0;
   padding: 20px;
 }
 
-/* 🔹 TITULO */
-h2 {
-  text-align: center;
-  margin-bottom: 15px;
-  color: #1976d2;
+.container {
+  max-width: 420px;
+  margin: auto;
 }
 
-/* 🔹 INPUTS Y SELECT */
-select,
-input,
-button {
+h1 {
+  text-align: center;
+}
+
+select, input, button {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 14px;
+  margin-top: 10px;
   border-radius: 10px;
   border: none;
-  font-size: 14px;
+  font-size: 16px;
 }
 
-/* 🔹 INPUT */
-input, select {
-  background: #fff;
-  border: 1px solid #ddd;
-}
-
-/* 🔹 BOTÓN PRINCIPAL */
 button {
-  background: #1976d2;
+  background: #007bff;
   color: white;
   font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
 }
 
-button:hover {
-  opacity: 0.9;
+.doctor-btn {
+  background: #28a745;
 }
 
-/* 🔹 TARJETA DE CITA */
-.cita {
+.back-btn {
+  background: #6c757d;
+}
+
+.card {
   background: white;
   padding: 15px;
-  margin-top: 12px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-  transition: 0.2s;
+  margin-top: 15px;
+  border-radius: 10px;
 }
 
-/* 🔹 EFECTO HOVER */
-.cita:hover {
-  transform: scale(1.01);
+.delete {
+  background: red;
+  margin-top: 10px;
 }
-
-/* 🔹 CITA ATENDIDA */
-.cita.atendida {
-  background: #e0e0e0;
-  opacity: 0.7;
-}
-
-/* 🔹 TEXTO */
-.cita strong {
-  font-size: 15px;
-}
-
-.cita span {
-  font-size: 13px;
-  color: #555;
-}
-
-/* 🔹 ACCIONES (BOTONES) */
-.acciones {
+/* 🔹 ACCIONES */
+.actions {
   display: flex;
   gap: 6px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
-/* 🔹 BOTONES GENERALES */
-.acciones button {
+.actions button {
   flex: 1;
-  padding: 9px;
+  padding: 10px;
   border-radius: 8px;
   border: none;
   color: white;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
-/* 🔹 BOTÓN CANCELAR */
-.btn-cancelar {
-  background: #e53935;
+/* ❌ Cancelar */
+.delete {
+  background: #dc3545;
 }
 
-.btn-cancelar:hover {
-  background: #c62828;
+/* ✅ Atendido */
+.atendido {
+  background: #28a745;
 }
 
-/* 🔹 BOTÓN ATENDIDO */
-.btn-atendido {
-  background: #43a047;
+/* 🔔 WhatsApp */
+.whatsapp {
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 
-.btn-atendido:hover {
-  background: #2e7d32;
+.whatsapp .icon {
+  font-size: 14px;
 }
 
-/* 🔹 BOTÓN RECORDATORIO */
-.btn-recordatorio {
-  background: #1e88e5;
-}
-
-.btn-recordatorio:hover {
-  background: #1565c0;
-}
-
-/* 🔹 RESPONSIVE */
-@media (max-width: 480px) {
-  .container {
-    padding: 15px;
-  }
-
-  .acciones {
-    flex-direction: column;
-  }
-
-  .acciones button {
-    font-size: 13px;
-  }
+/* 🔹 Estado atendido */
+.card.atendida {
+  opacity: 0.6;
+  background: #d4edda;
 }
