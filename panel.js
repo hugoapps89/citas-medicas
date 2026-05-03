@@ -19,18 +19,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const doctorEl = document.getElementById("doctor");
-const dateEl = document.getElementById("filterDate");
+const dateEl = document.getElementById("date");
 const container = document.getElementById("appointments");
 
-document.getElementById("btnFiltrar").addEventListener("click", loadAppointments);
-document.getElementById("btnHoy").addEventListener("click", () => {
-  const today = new Date().toISOString().split("T")[0];
-  dateEl.value = today;
-  loadAppointments();
-});
+document.getElementById("btnFiltrar").addEventListener("click", load);
 
-// 🔥 Cargar citas filtradas
-async function loadAppointments() {
+// 🔥 Cargar citas
+async function load() {
   const doctor = doctorEl.value;
   const date = dateEl.value;
 
@@ -41,12 +36,12 @@ async function loadAppointments() {
 
   let q = collection(db, "appointments");
 
-  if (doctor && date) {
+  if (date) {
     q = query(q,
       where("doctor", "==", doctor),
       where("date", "==", date)
     );
-  } else if (doctor) {
+  } else {
     q = query(q,
       where("doctor", "==", doctor)
     );
@@ -55,11 +50,6 @@ async function loadAppointments() {
   const snapshot = await getDocs(q);
 
   container.innerHTML = "";
-
-  if (snapshot.empty) {
-    container.innerHTML = "<p>No hay citas</p>";
-    return;
-  }
 
   snapshot.forEach(docSnap => {
     const a = docSnap.data();
@@ -77,7 +67,7 @@ async function loadAppointments() {
 
     div.querySelector("button").addEventListener("click", async () => {
       await deleteDoc(doc(db, "appointments", docSnap.id));
-      loadAppointments();
+      load();
     });
 
     container.appendChild(div);
