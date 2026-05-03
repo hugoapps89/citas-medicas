@@ -4,38 +4,39 @@ import {
   collection,
   addDoc,
   getDocs,
-  deleteDoc,
-  doc,
   query,
   where
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ✅ TU CONFIG (YA CORRECTA)
+// 🔥 TU CONFIG YA PEGADO
 const firebaseConfig = {
   apiKey: "AIzaSyDn-ETfal7IEjghIaZJlbPRTgyOl3BUcKE",
   authDomain: "cita-medica-b4c8c.firebaseapp.com",
   projectId: "cita-medica-b4c8c",
-  storageBucket: "cita-medica-b4c8c.firebasestorage.app",
-  messagingSenderId: "259363349747",
-  appId: "1:259363349747:web:26431a342d0638f1994386"
 };
 
-// Inicializar
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const baseTimes = ["09:00","10:00","11:00","12:00","16:00","17:00"];
 
-// ELEMENTOS
 const doctorEl = document.getElementById("doctor");
 const dateEl = document.getElementById("date");
 const timeEl = document.getElementById("time");
 const btn = document.getElementById("btnAgendar");
 
-// EVENTOS
 doctorEl.addEventListener("change", updateTimes);
 dateEl.addEventListener("change", updateTimes);
 btn.addEventListener("click", book);
+
+window.goToPanel = function() {
+  let pass = prompt("Clave doctor");
+  if (pass === "1234") {
+    window.location.href = "panel.html";
+  } else {
+    alert("Acceso denegado");
+  }
+}
 
 // 🔒 Obtener horarios ocupados
 async function getBlockedTimes(doctor, date) {
@@ -49,7 +50,7 @@ async function getBlockedTimes(doctor, date) {
   return snapshot.docs.map(doc => doc.data().time);
 }
 
-// 🔄 Actualizar horarios
+// 🔄 Cargar horarios
 async function updateTimes() {
   const doctor = doctorEl.value;
   const date = dateEl.value;
@@ -63,7 +64,7 @@ async function updateTimes() {
   try {
     blocked = await getBlockedTimes(doctor, date);
   } catch (e) {
-    console.log("Error Firebase:", e);
+    console.log(e);
   }
 
   baseTimes.forEach(t => {
@@ -81,7 +82,7 @@ async function updateTimes() {
   });
 }
 
-// 📲 Agendar cita
+// 📲 Agendar
 async function book() {
   const doctor = doctorEl.value;
   const date = dateEl.value;
@@ -97,7 +98,7 @@ async function book() {
   const blocked = await getBlockedTimes(doctor, date);
 
   if (blocked.includes(time)) {
-    alert("Ese horario ya está ocupado");
+    alert("Horario ocupado");
     return;
   }
 
@@ -112,38 +113,4 @@ async function book() {
   alert("Cita agendada");
 
   updateTimes();
-  loadAppointments();
 }
-
-// 📋 Cargar citas
-async function loadAppointments() {
-  const snapshot = await getDocs(collection(db, "appointments"));
-  const container = document.getElementById("appointments");
-
-  container.innerHTML = "";
-
-  snapshot.forEach(docSnap => {
-    const a = docSnap.data();
-
-    const div = document.createElement("div");
-    div.className = "card";
-
-    div.innerHTML = `
-      <b>${a.doctor}</b><br>
-      📅 ${a.date} - ⏰ ${a.time}<br>
-      👤 ${a.name}<br>
-      📞 ${a.phone}
-      <button class="delete" data-id="${docSnap.id}">Cancelar</button>
-    `;
-
-    div.querySelector("button").addEventListener("click", async () => {
-      await deleteDoc(doc(db, "appointments", docSnap.id));
-      loadAppointments();
-      updateTimes();
-    });
-
-    container.appendChild(div);
-  });
-}
-
-loadAppointments();
