@@ -27,7 +27,10 @@ button {
   background: #007bff;
   color: white;
   font-weight: bold;
-  cursor: pointer;
+}
+
+.doctor-btn {
+  background: #28a745;
 }
 
 .card {
