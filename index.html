@@ -11,22 +11,21 @@
 
 <h1>📅 Agendar Cita</h1>
 
-<button onclick="goToPanel()" class="doctor-btn">🩺 Panel Doctor</button>
+<button onclick="window.location.href='login.html'" class="doctor-btn">
+🩺 Panel Doctor
+</button>
 
 <select id="doctor">
   <option value="">Selecciona especialista</option>
-  <option value="Dr. Juan - Médico General">👨‍⚕️ Médico General — Dr. Juan</option>
-  <option value="Dra. Ana - Dentista">🦷 Dentista — Dra. Ana</option>
+  <option value="drjuan@gmail.com">👨‍⚕️ Médico General — Dr. Juan</option>
+  <option value="draana@gmail.com">🦷 Dentista — Dra. Ana</option>
 </select>
 
 <input type="date" id="date">
-
-<select id="time">
-  <option value="">Selecciona horario</option>
-</select>
+<select id="time"><option value="">Selecciona horario</option></select>
 
 <input type="text" id="name" placeholder="Tu nombre">
-<input type="tel" id="phone" placeholder="Tu teléfono">
+<input type="tel" id="phone" placeholder="Tu teléfono (10 dígitos)">
 
 <button id="btnAgendar">📲 Agendar cita</button>
 
