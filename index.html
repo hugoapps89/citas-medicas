@@ -1,21 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<title>Agendar Cita</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="login-container">
-  <h2>Iniciar sesión</h2>
+<div class="container">
 
-  <input type="email" id="email" placeholder="Correo">
-  <input type="password" id="password" placeholder="Contraseña">
+<h1>📅 Agendar Cita</h1>
 
-  <button id="btnLogin">Entrar</button>
+<button onclick="goToPanel()" class="doctor-btn">🩺 Panel Doctor</button>
+
+<select id="doctor">
+  <option value="">Selecciona especialista</option>
+  <option value="Dr. Juan - Médico General">👨‍⚕️ Médico General — Dr. Juan</option>
+  <option value="Dra. Ana - Dentista">🦷 Dentista — Dra. Ana</option>
+</select>
+
+<input type="date" id="date">
+
+<select id="time">
+  <option value="">Selecciona horario</option>
+</select>
+
+<input type="text" id="name" placeholder="Tu nombre">
+<input type="tel" id="phone" placeholder="Tu teléfono">
+
+<button id="btnAgendar">📲 Agendar cita</button>
+
 </div>
 
-<script type="module" src="login.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
