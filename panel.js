@@ -1,80 +1,85 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+// 🔐 PROTECCIÓN
+if (localStorage.getItem("logueado") !== "true") {
+  window.location.href = "index.html";
+}
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDn-ETfal7IEjghIaZJlbPRTgyOl3BUcKE",
-  authDomain: "cita-medica-b4c8c.firebaseapp.com",
-  projectId: "cita-medica-b4c8c",
+// 📋 DATOS DE PRUEBA (luego será Firebase)
+let citas = [
+  {
+    id: 1,
+    nombre: "Juan Pérez",
+    telefono: "5219991234567",
+    hora: "10:00 AM",
+    atendido: false
+  },
+  {
+    id: 2,
+    nombre: "María López",
+    telefono: "5219999876543",
+    hora: "11:30 AM",
+    atendido: false
+  }
+];
+
+// 🔄 RENDER
+function renderCitas() {
+  const contenedor = document.getElementById("listaCitas");
+  contenedor.innerHTML = "";
+
+  citas.forEach(cita => {
+
+    const div = document.createElement("div");
+    div.className = "cita";
+
+    if (cita.atendido) {
+      div.classList.add("atendido");
+    }
+
+    div.innerHTML = `
+      <strong>${cita.nombre}</strong><br>
+      Hora: ${cita.hora}<br><br>
+
+      <button class="btn-wsp" onclick="enviarWhatsApp('${cita.nombre}', '${cita.telefono}', '${cita.hora}')">
+        📲 Recordar por WhatsApp
+      </button>
+
+      <button class="btn-ok" onclick="marcarAtendido(${cita.id})">
+        ✔ Atendido
+      </button>
+    `;
+
+    contenedor.appendChild(div);
+  });
+}
+
+// 📲 WHATSAPP
+window.enviarWhatsApp = function(nombre, telefono, hora) {
+
+  const mensaje = `Hola ${nombre}, te recordamos tu cita médica a las ${hora}.`;
+
+  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+  window.open(url, "_blank");
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// ✔ ATENDER
+window.marcarAtendido = function(id) {
 
-const doctorEl = document.getElementById("doctor");
-const dateEl = document.getElementById("date");
-const container = document.getElementById("appointments");
+  citas = citas.map(cita => {
+    if (cita.id === id) {
+      cita.atendido = true;
+    }
+    return cita;
+  });
 
-document.getElementById("btnFiltrar").addEventListener("click", load);
+  renderCitas();
+};
 
-// 🔙 volver
-window.goHome = function() {
+// 🚪 LOGOUT
+window.logout = function () {
+  localStorage.removeItem("logueado");
   window.location.href = "index.html";
 };
 
-// 🔥 cargar citas
-async function load() {
-  const doctor = doctorEl.value;
-  const date = dateEl.value;
-
-  if (!doctor) {
-    alert("Selecciona doctor");
-    return;
-  }
-
-  let q = collection(db, "appointments");
-
-  if (date) {
-    q = query(q,
-      where("doctor", "==", doctor),
-      where("date", "==", date)
-    );
-  } else {
-    q = query(q,
-      where("doctor", "==", doctor)
-    );
-  }
-
-  const snapshot = await getDocs(q);
-
-  container.innerHTML = "";
-
-  snapshot.forEach(docSnap => {
-    const a = docSnap.data();
-
-    const div = document.createElement("div");
-    div.className = "card";
-
-    div.innerHTML = `
-      <b>${a.doctor}</b><br>
-      📅 ${a.date} - ⏰ ${a.time}<br>
-      👤 ${a.name}<br>
-      📞 ${a.phone}
-      <button class="delete">Cancelar</button>
-    `;
-
-    div.querySelector("button").addEventListener("click", async () => {
-      await deleteDoc(doc(db, "appointments", docSnap.id));
-      load();
-    });
-
-    container.appendChild(div);
-  });
-}
+// 🚀 INICIO
+renderCitas();
