@@ -1,27 +1,63 @@
-console.log("🔥 login funcionando");
+// 🔥 IMPORTS (requiere type="module")
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const btn = document.getElementById("btnLogin");
+console.log("🔥 Firebase login cargado");
 
-btn.addEventListener("click", () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+// 🔧 CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyDn-ETfal7IEjghIaZJlbPRTgyOl3BUcKE",
+  authDomain: "cita-medica-b4c8c.firebaseapp.com",
+  projectId: "cita-medica-b4c8c",
+};
 
-  console.log("Intento:", email, password);
+// 🚀 INIT
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  // 🔐 USUARIO DE PRUEBA
-  const usuarioCorrecto = "admin@gmail.com";
-  const passwordCorrecto = "123456";
+// ⏳ DOM READY
+document.addEventListener("DOMContentLoaded", () => {
 
-  if (email === usuarioCorrecto && password === passwordCorrecto) {
-    console.log("✅ Login correcto");
+  const btn = document.getElementById("btnLogin");
 
-    // Guardar sesión
-    localStorage.setItem("logueado", "true");
+  btn.addEventListener("click", async () => {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-    // Redirigir
-    window.location.href = "panel.html";
+    if (!email || !password) {
+      alert("Completa los campos");
+      return;
+    }
 
-  } else {
-    alert("❌ Correo o contraseña incorrectos");
-  }
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+
+      console.log("✅ Usuario logueado:", user.user.email);
+
+      // 🔐 Guardar sesión manual (extra seguridad UI)
+      localStorage.setItem("logueado", "true");
+
+      // 🚀 Redirección
+      window.location.href = "panel.html";
+
+    } catch (error) {
+      console.error("❌ Error:", error.code);
+
+      let msg = "Error al iniciar sesión";
+
+      if (error.code === "auth/user-not-found") {
+        msg = "Usuario no registrado";
+      } else if (error.code === "auth/wrong-password") {
+        msg = "Contraseña incorrecta";
+      } else if (error.code === "auth/invalid-email") {
+        msg = "Correo inválido";
+      }
+
+      alert(msg);
+    }
+  });
+
 });
