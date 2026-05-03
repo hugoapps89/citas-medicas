@@ -8,7 +8,6 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// 🔥 TU CONFIG YA PEGADO
 const firebaseConfig = {
   apiKey: "AIzaSyDn-ETfal7IEjghIaZJlbPRTgyOl3BUcKE",
   authDomain: "cita-medica-b4c8c.firebaseapp.com",
@@ -29,6 +28,7 @@ doctorEl.addEventListener("change", updateTimes);
 dateEl.addEventListener("change", updateTimes);
 btn.addEventListener("click", book);
 
+// 🔐 acceso panel
 window.goToPanel = function() {
   let pass = prompt("Clave doctor");
   if (pass === "1234") {
@@ -36,9 +36,9 @@ window.goToPanel = function() {
   } else {
     alert("Acceso denegado");
   }
-}
+};
 
-// 🔒 Obtener horarios ocupados
+// 🔒 obtener ocupados
 async function getBlockedTimes(doctor, date) {
   const q = query(
     collection(db, "appointments"),
@@ -50,7 +50,7 @@ async function getBlockedTimes(doctor, date) {
   return snapshot.docs.map(doc => doc.data().time);
 }
 
-// 🔄 Cargar horarios
+// 🔄 cargar horarios
 async function updateTimes() {
   const doctor = doctorEl.value;
   const date = dateEl.value;
@@ -82,7 +82,7 @@ async function updateTimes() {
   });
 }
 
-// 📲 Agendar
+// 📲 agendar
 async function book() {
   const doctor = doctorEl.value;
   const date = dateEl.value;
@@ -111,6 +111,5 @@ async function book() {
   });
 
   alert("Cita agendada");
-
   updateTimes();
 }
