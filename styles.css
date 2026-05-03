@@ -33,6 +33,10 @@ button {
   background: #28a745;
 }
 
+.back-btn {
+  background: #6c757d;
+}
+
 .card {
   background: white;
   padding: 15px;
@@ -43,8 +47,4 @@ button {
 .delete {
   background: red;
   margin-top: 10px;
-}
-
-.back-btn {
-  background: #6c757d;
 }
