@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Citas Médicas PRO</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1>📅 Agendar Cita</h1>
+
+  <select id="doctor">
+    <option value="">Selecciona especialista</option>
+    <option value="Dr. Juan - Médico General">👨‍⚕️ Médico General</option>
+    <option value="Dra. Ana - Dentista">🦷 Dentista</option>
+  </select>
+
+  <input type="date" id="date">
+
+  <select id="time">
+    <option value="">Selecciona horario</option>
+  </select>
+
+  <input type="text" id="name" placeholder="Tu nombre">
+  <input type="tel" id="phone" placeholder="Tu teléfono">
+
+  <button id="btnAgendar">📲 Agendar cita</button>
+
+  <div id="appointments"></div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
