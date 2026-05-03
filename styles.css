@@ -1,50 +1,150 @@
-body {
-  font-family: Arial;
-  background: #eef4ff;
+/* 🔹 RESET */
+* {
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
+/* 🔹 BODY */
+body {
+  background: #f4f6f9;
+  color: #333;
+}
+
+/* 🔹 CONTENEDOR */
 .container {
   max-width: 420px;
   margin: auto;
+  padding: 20px;
 }
 
-h1 {
+/* 🔹 TITULO */
+h2 {
   text-align: center;
+  margin-bottom: 15px;
+  color: #1976d2;
 }
 
-select, input, button {
+/* 🔹 INPUTS Y SELECT */
+select,
+input,
+button {
   width: 100%;
-  padding: 14px;
-  margin-top: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
   border-radius: 10px;
   border: none;
-  font-size: 16px;
+  font-size: 14px;
 }
 
+/* 🔹 INPUT */
+input, select {
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+/* 🔹 BOTÓN PRINCIPAL */
 button {
-  background: #007bff;
+  background: #1976d2;
   color: white;
   font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.doctor-btn {
-  background: #28a745;
+button:hover {
+  opacity: 0.9;
 }
 
-.back-btn {
-  background: #6c757d;
-}
-
-.card {
+/* 🔹 TARJETA DE CITA */
+.cita {
   background: white;
   padding: 15px;
-  margin-top: 15px;
-  border-radius: 10px;
+  margin-top: 12px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  transition: 0.2s;
 }
 
-.delete {
-  background: red;
-  margin-top: 10px;
+/* 🔹 EFECTO HOVER */
+.cita:hover {
+  transform: scale(1.01);
+}
+
+/* 🔹 CITA ATENDIDA */
+.cita.atendida {
+  background: #e0e0e0;
+  opacity: 0.7;
+}
+
+/* 🔹 TEXTO */
+.cita strong {
+  font-size: 15px;
+}
+
+.cita span {
+  font-size: 13px;
+  color: #555;
+}
+
+/* 🔹 ACCIONES (BOTONES) */
+.acciones {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* 🔹 BOTONES GENERALES */
+.acciones button {
+  flex: 1;
+  padding: 9px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 🔹 BOTÓN CANCELAR */
+.btn-cancelar {
+  background: #e53935;
+}
+
+.btn-cancelar:hover {
+  background: #c62828;
+}
+
+/* 🔹 BOTÓN ATENDIDO */
+.btn-atendido {
+  background: #43a047;
+}
+
+.btn-atendido:hover {
+  background: #2e7d32;
+}
+
+/* 🔹 BOTÓN RECORDATORIO */
+.btn-recordatorio {
+  background: #1e88e5;
+}
+
+.btn-recordatorio:hover {
+  background: #1565c0;
+}
+
+/* 🔹 RESPONSIVE */
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .acciones button {
+    font-size: 13px;
+  }
 }
