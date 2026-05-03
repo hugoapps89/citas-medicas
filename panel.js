@@ -6,73 +6,91 @@ import {
   deleteDoc,
   doc,
   query,
-  where
+  where,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDn-ETfal7IEjghIaZJlbPRTgyOl3BUcKE",
+  apiKey: "AIzaSyDn...",
   authDomain: "cita-medica-b4c8c.firebaseapp.com",
   projectId: "cita-medica-b4c8c",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-const doctorEl = document.getElementById("doctor");
-const dateEl = document.getElementById("date");
 const container = document.getElementById("appointments");
+const doctorName = document.getElementById("doctorName");
 
-document.getElementById("btnFiltrar").addEventListener("click", load);
+window.goHome = () => location.href = "index.html";
 
-// 🔙 volver
-window.goHome = function() {
-  window.location.href = "index.html";
-};
+onAuthStateChanged(auth, user => {
+  if (!user) return location.href = "login.html";
+
+  doctorName.textContent = "Doctor: " + user.email;
+  load(user.email);
+});
 
 // 🔥 cargar citas
-async function load() {
-  const doctor = doctorEl.value;
-  const date = dateEl.value;
+async function load(email) {
+  const q = query(collection(db, "appointments"),
+    where("doctorId", "==", email)
+  );
 
-  if (!doctor) {
-    alert("Selecciona doctor");
-    return;
-  }
-
-  let q = collection(db, "appointments");
-
-  if (date) {
-    q = query(q,
-      where("doctor", "==", doctor),
-      where("date", "==", date)
-    );
-  } else {
-    q = query(q,
-      where("doctor", "==", doctor)
-    );
-  }
-
-  const snapshot = await getDocs(q);
-
+  const snap = await getDocs(q);
   container.innerHTML = "";
 
-  snapshot.forEach(docSnap => {
+  snap.forEach(docSnap => {
     const a = docSnap.data();
 
-    const div = document.createElement("div");
+    const phone = "52" + a.phone.replace(/\D/g, "");
+
+    const msg = `Hola ${a.name}, te recordamos tu cita:
+📅 ${a.date}
+⏰ ${a.time}`;
+
+    const wa = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+
+    let div = document.createElement("div");
     div.className = "card";
 
+    if (a.attended) {
+      div.classList.add("attended");
+    }
+
     div.innerHTML = `
-      <b>${a.doctor}</b><br>
       📅 ${a.date} - ⏰ ${a.time}<br>
       👤 ${a.name}<br>
       📞 ${a.phone}
+
+      <button class="whatsapp">💬 Recordar</button>
+      <button class="done">✔ Atendido</button>
       <button class="delete">Cancelar</button>
     `;
 
-    div.querySelector("button").addEventListener("click", async () => {
+    // 💬 WhatsApp
+    div.querySelector(".whatsapp").addEventListener("click", () => {
+      window.open(wa);
+    });
+
+    // ✔ marcar atendido
+    div.querySelector(".done").addEventListener("click", async () => {
+      await updateDoc(doc(db, "appointments", docSnap.id), {
+        attended: true
+      });
+      load(email);
+    });
+
+    // ❌ eliminar
+    div.querySelector(".delete").addEventListener("click", async () => {
       await deleteDoc(doc(db, "appointments", docSnap.id));
-      load();
+      load(email);
     });
 
     container.appendChild(div);
